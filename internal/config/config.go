@@ -34,9 +34,9 @@ func Read() (Config, error) {
 
 }
 
-func (gatorConfig Config) SetUser(username string) error {
+func (gatorConfig *Config) SetUser(username string) error {
 	gatorConfig.CurrentUserName = username
-	write(gatorConfig)
+	write(*gatorConfig)
 	return nil
 }
 
