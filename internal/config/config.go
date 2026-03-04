@@ -65,9 +65,6 @@ func getConfigFilePath() (string, error) {
 	}
 
 	configfile := path.Join(homeDir, configFileName)
-	if err != nil {
-		return "", fmt.Errorf("Error finding config file name: %v", err)
-	}
 
 	return configfile, nil
 }
