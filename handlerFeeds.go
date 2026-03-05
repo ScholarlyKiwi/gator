@@ -14,7 +14,7 @@ func handlerFeeds(s *state, cmd command) error {
 	fmt.Println("Listing all Feeds:")
 
 	for _, feed := range feeds {
-		user, err := s.db.GetUserByID(context.Background(), feed.UserID.UUID)
+		user, err := s.db.GetUserByID(context.Background(), feed.UserID)
 		if err != nil {
 			return fmt.Errorf("Error retrieving user for feeds: %v", err)
 		}
