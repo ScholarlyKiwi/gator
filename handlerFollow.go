@@ -15,15 +15,21 @@ func handlerFollow(s *state, cmd command, user database.User) error {
 	}
 	url := cmd.arguments[0]
 
+	rssfeed, err := fetchFeed(context.Background(), url)
+	if err != nil {
+		return fmt.Errorf("Error feed not found at %v: %v", url, err)
+	}
+
 	feed, err_feed := s.db.GetFeedByURL(context.Background(), url)
 
 	if err_feed != nil {
 
 		if err_feed.Error() == "sql: no rows in result set" {
+
 			handlerAddFeed(s,
 				command{
 					command:   "addfeed",
-					arguments: []string{url, url},
+					arguments: []string{rssfeed.Channel.Title, url},
 				},
 				user)
 			feed, err_feed = s.db.GetFeedByURL(context.Background(), url)

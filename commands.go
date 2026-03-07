@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/ScholarlyKiwi/gator/internal/database"
+	"github.com/araddon/dateparse"
+	"github.com/google/uuid"
 )
 
 type commands struct {
@@ -88,9 +90,26 @@ func scrapeFeeds(s *state) error {
 
 	rssfeed, err := fetchFeed(context.Background(), feed.Url)
 
-	fmt.Printf("***%v***", rssfeed.Channel.Title)
 	for _, feedItems := range rssfeed.Channel.Item {
-		fmt.Printf("- %v\n", feedItems.Title)
+
+		parsedDate, err := dateparse.ParseStrict(feedItems.PubDate)
+		if err != nil {
+			fmt.Printf("Unable to parse date %v on post %v: %v\n", feedItems.PubDate, feedItems.Title, err)
+		} else {
+			postParam := database.CreatePostParams{
+				ID:          uuid.New(),
+				CreatedAt:   time.Now(),
+				UpdatedAt:   time.Now(),
+				Title:       feedItems.Title,
+				Url:         feedItems.Link,
+				PublishedAt: parsedDate,
+				FeedID:      feed.ID,
+			}
+			_, err := s.db.CreatePost(context.Background(), postParam)
+			if err != nil {
+				fmt.Printf("Error creating post %v: %v", feedItems.Title, err)
+			}
+		}
 	}
 
 	return nil

@@ -64,6 +64,7 @@ func configuration(c *commands, s *state) error {
 	c.register("follow", middlewareLoggedIn(handlerFollow))
 	c.register("following", middlewareLoggedIn(handlerFollowing))
 	c.register("unfollow", middlewareLoggedIn(handlerUnfollow))
+	c.register("browse", middlewareLoggedIn(handlerBrowse))
 
 	db, err := sql.Open("postgres", s.config.DBurl)
 	s.db = database.New(db)
