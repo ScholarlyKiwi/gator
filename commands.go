@@ -107,7 +107,7 @@ func scrapeFeeds(s *state) error {
 			}
 			_, err := s.db.CreatePost(context.Background(), postParam)
 			if err != nil {
-				fmt.Printf("Error creating post %v: %v", feedItems.Title, err)
+				fmt.Printf("Error creating post %v: %v\n", feedItems.Title, err)
 			}
 		}
 	}
