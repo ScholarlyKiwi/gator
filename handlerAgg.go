@@ -1,18 +1,24 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"time"
 )
 
 func handlerAgg(s *state, cmd command) error {
-
-	feed, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
-	if err != nil {
-		return err
+	if len(cmd.arguments) != 1 {
+		return fmt.Errorf("Error Agg command requires a request delay.")
 	}
 
-	fmt.Println(feed)
+	time_between_args, err := time.ParseDuration(cmd.arguments[0])
+	if err != nil {
+		return fmt.Errorf("Error invalid time as request delay, %v", cmd.arguments[0])
+	}
 
-	return nil
+	fmt.Printf("Collecting feeds every %v\n", time_between_args)
+
+	ticker := time.NewTicker(time_between_args)
+	for ; ; <-ticker.C {
+		scrapeFeeds(s)
+	}
 }
